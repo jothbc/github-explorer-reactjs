@@ -31,15 +31,15 @@ export const RepositoryInfo = styled.section`
     align-items:center;
 
     img{
-      width: 120px;
-      height: 120px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
     }
     div{
       margin-left: 24px;
 
       strong{
-        font-size: 36px;
+        font-size: 24px;
         color: #3d3d4d;
       }
       p{

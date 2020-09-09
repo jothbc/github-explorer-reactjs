@@ -1,4 +1,4 @@
-import styled,{css} from 'styled-components';
+import styled,{css, keyframes} from 'styled-components';
 import {shade} from 'polished';
 
 interface FormProps {
@@ -103,8 +103,20 @@ export const Repositories = styled.div`
   }
 `;
 
+const animError = keyframes`
+  from{
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to{
+    transform: translateY(0px);
+    opacity: 1;
+  }
+`;
+
 export const Error= styled.span`
   display:block;
   color : #c53030;
   margin-top : 8px;
+  animation: ${animError} 300ms ease-in forwards;
 `;

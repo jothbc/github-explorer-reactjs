@@ -1,57 +1,61 @@
 import React, { useState, FormEvent, useEffect } from 'react';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import api from '../../services/api';
 
 import logoImg from '../../assets/logo.svg';
 
-import { Title, Form, Repositories,Error } from './style';
+import { Title, Form, Repositories, Error } from './style';
 import { FiChevronRight } from 'react-icons/fi';
 
-interface Repository{
-  full_name:string;
-  description: string;
-  owner:{
-    login: string;
-    avatar_url:string;
-  };
+interface UserInterface {
+  login: string;
+  name: string;
+  avatar_url: string;
+  location: string;
+  followers: number;
+  following: number;
 }
 
 const Dashboard: React.FC = () => {
 
-  const [newRepo, setNewRepo] = useState('');
-  const [inputError,setInputError] = useState('');
-  const [repositories, setRepositories] = useState<Repository[]>(()=>{
-    const storagedRepositories = localStorage.getItem('@GithubExplorer:repositories');
-
-    if(storagedRepositories){
-      return JSON.parse(storagedRepositories);
+  const [newUser, setNewUser] = useState('');
+  const [inputError, setInputError] = useState('');
+  const [users, setUsers] = useState<UserInterface[]>(() => {
+    const storagedUsers = localStorage.getItem('@GithubExplorer:users');
+    if (storagedUsers) {
+      return JSON.parse(storagedUsers);
     }
     return [];
   });
 
-  useEffect( ()=> {
-    localStorage.setItem('@GithubExplorer:repositories',JSON.stringify(repositories))
+  useEffect(() => {
+    localStorage.setItem('@GithubExplorer:users', JSON.stringify(users));
+  }, [users]);
 
-  }, [repositories]);
-
-  async function handleAddRepository(event: FormEvent<HTMLFormElement>):Promise<void>{
+  async function handleAddUser(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-    if(!newRepo){
-      setInputError('Digite o autor/nome do repositório');
+    if (!newUser) {
+      setInputError('Informe um usuário válido do GitHub');
       return;
     }
 
-    try{
-      const response = await api.get<Repository>(`repos/${newRepo}`);
+    try {
+      const response = await api.get<UserInterface>(`users/${newUser}`);
 
-      const repository = response.data;
+      const user = response.data;
 
-      setRepositories([...repositories,repository]);
-      setNewRepo('');
+      if(users.findIndex(u => u.login === user.login) !== -1){
+        setInputError('Usuário ja consta na lista.');
+        return;
+      }
+
+      setUsers([...users, user]);
       setInputError('');
-    }catch(Err){
-      setInputError('Erro na busca por esse repositório.');
+    } catch (Err) {
+      setInputError('Erro na busca por esse usuário.');
+    } finally {
+      setNewUser('');
     }
   }
 
@@ -60,26 +64,25 @@ const Dashboard: React.FC = () => {
       <img src={logoImg} alt="Github Explorer" />
       <Title>Explore repositórios no Github</Title>
 
-      <Form hasError={!!inputError} onSubmit={handleAddRepository}>
-        <input placeholder="Digite o nome do repositório" value={newRepo} onChange={e => setNewRepo(e.target.value)} />
+      <Form hasError={!!inputError} onSubmit={handleAddUser}>
+        <input placeholder="Digite um usuário do GitHub" value={newUser} onChange={e => setNewUser(e.target.value)} />
         <button type="submit">Pesquisar</button>
       </Form>
 
-      { inputError && <Error>{inputError}</Error> }
+      {inputError && <Error>{inputError}</Error>}
 
       <Repositories>
-        {repositories.map(repository => (
-          <Link key={repository.full_name} to={`/repositories/${repository.full_name}`}>
-            <img src={repository.owner.avatar_url} alt={repository.owner.login} />
-              <div>
-                <strong>{repository.full_name}</strong>
-                <p>{repository.description}</p>
-              </div>
+        {users.map(user => (
+          <Link key={user.login} to={`/repositories/${user.login}`}>
+            <img src={user.avatar_url} alt={user.login} />
+            <div>
+              <strong>{user.name}</strong>
+              <p>{`${user.login} - ${user.location}`}</p>
+            </div>
             <FiChevronRight size={20} />
           </Link>
         ))}
       </Repositories>
-
     </>
   )
 }
