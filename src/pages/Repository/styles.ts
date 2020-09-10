@@ -36,13 +36,21 @@ export const RepositoryInfo = styled.section`
     flex-direction: column;
     align-items: center;
     background: #fff;
-    border-radius: 10px;
+    border-radius: 75px;
     transition: 300ms ease;
     margin-top: 16px;
     padding: 16px;
 
+
+    box-shadow: -5px -5px 5px rgb(255,255,255,0.4),
+          inset 5px 5px 5px rgba(50,50,50,0.2),
+                5px 5px 5px rgba(0,0,0,0.2),
+          inset -5px -5px 5px rgba(255,255,255,0.2);
+
     &:hover{
-      transform: scale(1.05);
+      transform: scale(1.01);
+      box-shadow: -10px -10px 10px rgb(255,255,255,0.2),
+                  10px 10px 10px rgba(0,0,0,0.2);
     }
 
 
@@ -89,7 +97,7 @@ interface LanguageProps {
   language?: string;
 }
 
-const switchColor = (lang: string) => {
+const switchColor = (lang: string = 'none') => {
   switch (lang.toLowerCase()) {
     case "javascript":
       return css`
