@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Header = styled.header`
   display: flex;
@@ -21,50 +21,53 @@ export const Header = styled.header`
     }
   }
 
-  & + section{
-    margin-top: 80px;
-  }
+
 `;
 
 export const RepositoryInfo = styled.section`
-  margin-top: 16px;
-  background: linear-gradient(45deg,rgb(0 0 0 / 9%), transparent);
-  border-radius: 35px;
-
-
-
-
+  margin-top: 80px;
+  display:flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
   header{
     display:flex;
-    align-items:center;
+    flex: 1 1 32%;
+    max-width: 32%;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    border-radius: 10px;
+    transition: 300ms ease;
+    margin-top: 16px;
+    padding: 16px;
 
-    /* img{
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-    } */
-    > span{
-      width: 100px;
-      padding-left: 18px;
+    &:hover{
+      transform: scale(1.05);
     }
-    div{
-      margin-left: 24px;
 
+
+    div{
+      width: 100%;
+      padding: 10px;
+
+      >a{
+        text-decoration: none;
+        &:hover{
+          color: #151515;
+        }
+      }
       strong{
         font-size: 24px;
         color: #3d3d4d;
       }
       ul{
-        display:flex;
         list-style:none;
         margin-top: 8px;
 
         li{
           display:flex;
           align-items:baseline;
-          & + li{
-            margin-left: 80px;
-          }
+
           strong{
             display:block;
             font-size: 24px;
@@ -79,5 +82,71 @@ export const RepositoryInfo = styled.section`
         }
       }
     }
+  }
+`;
+
+interface LanguageProps {
+  language?: string;
+}
+
+const switchColor = (lang: string) => {
+  switch (lang.toLowerCase()) {
+    case "javascript":
+      return css`
+        background: #f1e05a;
+      `;
+    case "java":
+      return css`
+        background: #b07219;
+      `;
+    case "html":
+      return css`
+        background: #e34c26;
+        `;
+    case "typescript":
+      return css`
+        background: #2b7489;
+      `;
+    case "tsql":
+      return css`
+        background: #cccccc;
+      `;
+    case "c++":
+      return css`
+        background: #f34b7d;
+      `;
+    case "c":
+      return css`
+        background: #b07219;
+      `;
+    case "php":
+      return css`
+        background: #4F5D95;
+      `;
+    case "css":
+      return css`
+        background: #563d7c;
+      `;
+  }
+  return;
+}
+
+export const Language = styled.span<LanguageProps>`
+
+  padding-bottom: 8px;
+  padding-left: 26px;
+  position: relative;
+
+  &::before{
+    content: '';
+    width: 20px;
+    height: 20px;
+    background: black;
+    border-radius: 50%;
+    position:absolute;
+    left: 0;
+
+    ${props => props.language && switchColor(props.language)}
+
   }
 `;

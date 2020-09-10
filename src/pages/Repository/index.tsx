@@ -1,24 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch, Link } from 'react-router-dom';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { Header, RepositoryInfo } from './styles';
+import { FiChevronLeft, FiCircle } from 'react-icons/fi';
+import { Header, RepositoryInfo,Language } from './styles';
 import api from '../../services/api';
 
 import logoImg from '../../assets/logo.svg';
 
 
-interface RepositoryParams {
-  repository: string;
-}
-
-interface Issue {
-  id: number;
-  title: string;
-  html_url: string;
-  user: {
-    login: string;
-  }
-}
 
 interface ParamsProps {
   login: string;
@@ -57,16 +45,6 @@ const Repository: React.FC = () => {
 
     getRepos();
   }, []);
-  // const {params} = useRouteMatch<RepositoryParams>();
-
-  // useEffect(()=>{
-  //   api.get(`repos/${params.repository}`).then(response=>{
-  //     setRepository(response.data)
-  //   })
-  //   api.get(`repos/${params.repository}/issues`).then(response=>{
-  //     setIssues(response.data)
-  //   })
-  // },[params.repository]);
 
   return (
     <>
@@ -78,15 +56,14 @@ const Repository: React.FC = () => {
       </Link>
       </Header>
 
-      {repositories && repositories.map(repository => (
-        <RepositoryInfo key={repository.name}>
-          <header>
-            {/* <img src={repository.owner.avatar_url} alt={repository.owner.login} /> */}
-            <span>
-              <strong>{repository.language}</strong>
-            </span>
+      <RepositoryInfo >
+        {repositories && repositories.map(repository => (
+          <header key={repository.name}>
+            <Language language={repository.language}>
+              {repository.language}
+            </Language>
             <div>
-              <strong>{repository.name}</strong>
+              <Link to={repository.html_url}><strong>{repository.name}</strong></Link>
               <ul>
                 <li>
                   <strong>{repository.stargazers_count}</strong>
@@ -104,8 +81,8 @@ const Repository: React.FC = () => {
             </div>
           </header>
 
-        </RepositoryInfo>
-      ))}
+        ))}
+      </RepositoryInfo>
     </>
   );
 }
